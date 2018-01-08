@@ -9,6 +9,7 @@
 import Foundation
 
 protocol HomeView: class{
+    
     func updateTableView()
     func updateUserAccountInfo()
 }
