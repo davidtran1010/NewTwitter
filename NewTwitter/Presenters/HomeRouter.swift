@@ -14,17 +14,21 @@ protocol HomeRouter:ViewRouter {
 
 class HomeRouterImpl:HomeRouter{
    
-    fileprivate weak var notificationViewController:NotificationViewController?
+    fileprivate weak var homeViewController:HomeViewController?
     
-    init(notificationViewController:NotificationViewController) {
-        self.notificationViewController = notificationViewController
+
+    init(homeViewController: HomeViewController) {
+        self.homeViewController = homeViewController
     }
+    
     func presentNotification() {
-        notificationViewController?.performSegue(withIdentifier: "HomeToNotificationSegue", sender: nil)
+        let storyBoard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyBoard.instantiateViewController(withIdentifier: "NotificationVCIdentity")
+        homeViewController?.present(vc, animated: true, completion: nil)
     }
     func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let notificationVC = segue.destination as? NotificationViewController{
-            //configurator notification VC here
-        }
+//        if let notificationVC = segue.destination as? NotificationViewController{
+//            //configurator notification VC here
+//        }
     }
 }

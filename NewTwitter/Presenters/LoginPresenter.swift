@@ -9,6 +9,9 @@
 import Foundation
 import TwitterKit
 import Alamofire
+import STTwitter
+import SwiftyJSON
+
 
 protocol LoginView: class {
     func updateLoginState(isSuccess:Bool)
@@ -38,8 +41,11 @@ class LoginPresenterImpl:LoginPresenter{
     func loginButtonPressed() {
         Twitter.sharedInstance().logIn(completion: { (session, error) in
             if (session != nil) {
+                
+                
                 print("signed in as \(session?.userName)");
                 self.handleLoginSuccess(session: session)
+                
             } else {
                 print("error: \(error?.localizedDescription)");
                 self.handleLoginError(error!)
@@ -50,7 +56,9 @@ class LoginPresenterImpl:LoginPresenter{
     fileprivate func handleLoginSuccess(session:Any){
         view?.displayLoginInfo(info: (session as! TWTRSession).userName)
         view?.updateLoginState(isSuccess: true)
-        router.presentHome()
+        
+        router.presentHome(with: (session as! TWTRSession))
+    
     }
     fileprivate func handleLoginError(_ error:Error){
         view?.updateLoginState(isSuccess: false)

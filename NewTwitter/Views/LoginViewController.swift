@@ -8,12 +8,16 @@
 
 import UIKit
 import TwitterKit
+import SDWebImage
+import Kingfisher
+
 class LoginViewController: UIViewController,LoginView {
     
     var presenter:LoginPresenter!
     var configurator:LoginConfiguarator!
     var twitter = Twitter.sharedInstance()
     
+    @IBOutlet weak var Logo: UIImageView!
     @IBOutlet weak var loginTwitterButton: TWTRLogInButton!
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
