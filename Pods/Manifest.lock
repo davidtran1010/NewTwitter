@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.5.1)
+  - ImageViewer (5.0.0)
   - Kingfisher (4.2.0)
   - ObjectMapper (3.0.0)
   - PromiseKit (4.5.0):
@@ -24,6 +25,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.5)
+  - ImageViewer
   - Kingfisher (~> 4.0)
   - ObjectMapper (~> 3.0.0)
   - PromiseKit (~> 4.5)
@@ -34,6 +36,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
+  ImageViewer: 3def6e39c6979ce3e9d001c78eec0d8b895f2f73
   Kingfisher: 9ee7e788d8ba07c3f21ce0d43f33cec310a4f781
   ObjectMapper: 92230db59bf8f341a5c3a3cf0b9fbdde3cf0d87f
   PromiseKit: 9c1d9f6d7b65e3951a90bea7f407c56972be5d8e
@@ -43,6 +46,6 @@ SPEC CHECKSUMS:
   TwitterCore: e0420b01e02e7d20e94690e37f43e75de219ab8d
   TwitterKit: 205ac89824bbfe9e85a16c420d30bb7bcbedac45
 
-PODFILE CHECKSUM: 1eee3626fb41288a72c58cc8a7437f1e022dc0cf
+PODFILE CHECKSUM: e3d60036461269f9cc03d7ead925e2ed0283e83a
 
 COCOAPODS: 1.3.1

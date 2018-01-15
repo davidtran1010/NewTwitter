@@ -88,10 +88,7 @@ class LoginViewController: UIViewController,LoginView {
          presenter.loginButtonPressed()
         
     }
-    @IBAction func goView(_ sender: Any) {
-        performSegue(withIdentifier: "LoginToHomeSegue", sender: self)
-        
-    }
+  
     /*
     // MARK: - Navigation
 

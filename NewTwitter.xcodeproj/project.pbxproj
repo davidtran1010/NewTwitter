@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0C3BCA782008544300B897DF /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3BCA772008544300B897DF /* PhotoCollectionViewCell.swift */; };
 		0C3BCA7C2008E38700B897DF /* TweetTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3BCA7B2008E38600B897DF /* TweetTableViewCellModel.swift */; };
-		0C3BCA7E200922BC00B897DF /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3BCA7D200922BC00B897DF /* CollectionViewController.swift */; };
 		0CA4483C1FF794F3002D5F64 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA4483B1FF794F3002D5F64 /* AppDelegate.swift */; };
 		0CA4483E1FF794F3002D5F64 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA4483D1FF794F3002D5F64 /* ViewController.swift */; };
 		0CA448411FF794F3002D5F64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0CA4483F1FF794F3002D5F64 /* Main.storyboard */; };
@@ -78,7 +77,6 @@
 /* Begin PBXFileReference section */
 		0C3BCA772008544300B897DF /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		0C3BCA7B2008E38600B897DF /* TweetTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweetTableViewCellModel.swift; sourceTree = "<group>"; };
-		0C3BCA7D200922BC00B897DF /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		0CA448381FF794F3002D5F64 /* NewTwitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewTwitter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CA4483B1FF794F3002D5F64 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0CA4483D1FF794F3002D5F64 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -280,7 +278,6 @@
 				0CA4487C1FF7D78B002D5F64 /* HomeViewController.swift */,
 				0CA4487E1FF7DAE1002D5F64 /* NotificationViewController.swift */,
 				0CE2C96E1FF8918A00E95C0B /* LoginViewController.swift */,
-				0C3BCA7D200922BC00B897DF /* CollectionViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -494,6 +491,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-NewTwitter/Pods-NewTwitter-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/ImageViewer/ImageViewer.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
@@ -504,6 +502,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ImageViewer.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ObjectMapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
@@ -660,7 +659,6 @@
 				0CA92D4720073F8A00675438 /* UserMentions.swift in Sources */,
 				0CA92D5620073F8A00675438 /* Thumb.swift in Sources */,
 				0CE2C9731FF895B300E95C0B /* ViewRouter.swift in Sources */,
-				0C3BCA7E200922BC00B897DF /* CollectionViewController.swift in Sources */,
 				0CA92D4F20073F8A00675438 /* Medium.swift in Sources */,
 				0CA4483E1FF794F3002D5F64 /* ViewController.swift in Sources */,
 				0CA92D282005D43B00675438 /* TweetTableViewCell.swift in Sources */,

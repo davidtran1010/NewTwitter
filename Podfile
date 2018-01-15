@@ -15,6 +15,7 @@ target 'NewTwitter' do
   pod 'SwiftyJSON'
   pod 'Kingfisher', '~> 4.0'
   pod 'SDWebImage', '~> 4.0'
+ pod 'ImageViewer'
   target 'NewTwitterTests' do
     inherit! :search_paths
     # Pods for testing

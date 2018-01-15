@@ -59,7 +59,7 @@ class HomePresenterImpl: HomePresenter{
     func viewDidLoad(with session: TWTRSession) {
         self.session = session
         firstly {
-            HomeTimelineAPI.fetchTimeline(with: session, count: 50)
+            HomeTimelineAPI.fetchTimeline(with: session, count: 70)
             }
             .then{ tweets in
                 self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets))

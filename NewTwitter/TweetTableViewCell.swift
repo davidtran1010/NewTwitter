@@ -26,7 +26,13 @@ class TweetTableViewCell: UITableViewCell {
     
     @IBOutlet weak var TweetContent: UILabel!
     
+    fileprivate func initView(){
+        TweetOwnerPhoto.layer.cornerRadius = 10
+        TweetOwnerPhoto.clipsToBounds = true
+        
+    }
     func configureItem(model: TweetTableViewCellModel){
+        initView()
         LikeCount.text = "\(model.LikeCount!)"
         ReplyCount.text = ""
         RetweetCount.text = "\(model.RetweetCount!)"
@@ -55,17 +61,22 @@ class TweetTableViewCell: UITableViewCell {
     }
 }
 extension TweetTableViewCell{
+    func setCollectionViewDataSourceDelegate
+        <D: UICollectionViewDelegate & UICollectionViewDataSource>(_ dataSourceDelegate:D, forRow row:Int){
+        print("set source and delegate cv table cell \(row)")
+        photoCollectionView.delegate = dataSourceDelegate
+        photoCollectionView.dataSource = dataSourceDelegate
+        photoCollectionView.tag = row
+        photoCollectionView.reloadData()
+        
+        
+    }
 //    func setCollectionViewDataSourceDelegate
-//        <D: UICollectionViewDelegate & UICollectionViewDataSource>(_ dataSourceDelegate:D, forRow row:Int){
-//        photoCollectionView.delegate = dataSourceDelegate
-//        photoCollectionView.dataSource = dataSourceDelegate
+//        (rootView:UIView, tableViewCellIndexpath:IndexPath,data:[String]){
+//
+//        var collectionViewController = PhotoCollectionViewDataSource.init(rootView: rootView, tableViewCellIndexPath: tableViewCellIndexpath, photoURLStringArray: data)
+//       // photoCollectionView.delegate = collectionViewController
+//        photoCollectionView.dataSource = collectionViewController
 //        photoCollectionView.reloadData()
 //    }
-    func setCollectionViewDataSourceDelegate
-        (rootView:UIView, tableViewCellIndexpath:IndexPath,data:[String]){
-        let collectionViewController = CollectionViewController.init(rootView: rootView, tableViewCellIndexPath: tableViewCellIndexpath, photoURLStringArray: data)
-        photoCollectionView.delegate = collectionViewController
-        photoCollectionView.dataSource = collectionViewController
-        photoCollectionView.reloadData()
-    }
 }
