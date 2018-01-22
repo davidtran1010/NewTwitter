@@ -20,6 +20,9 @@ static func fetchTimeline(with session: TWTRSession, count:UInt) -> Promise<[Twe
         let twitter = STTwitterAPI(oAuthConsumerKey: ApiInfo.consumerKey, consumerSecret: ApiInfo.consumerSecret, oauthToken: session.authToken, oauthTokenSecret: session .authTokenSecret)
         
         twitter?.verifyCredentials(userSuccessBlock: { (userName, userID) in
+          
+            
+            
             twitter?.getHomeTimeline(sinceID: nil, count: count, successBlock: { (statuses) -> Void in
                 let jsonArrayString  = JSON(arrayLiteral: statuses)[0].rawString(.utf8, options: [])
                 let jsonObjectString = "{\"Tweets\":" + jsonArrayString! + "}"

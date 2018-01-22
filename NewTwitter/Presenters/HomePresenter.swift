@@ -12,7 +12,9 @@ import TwitterKit
 protocol HomeView: class{
     
     func updateTableView(array:[TweetTableViewCellModel])
-    func updateUserAccountInfo()
+    func updateUserAccountInfo(userID:String,imageURL:String)
+    func updateHomeAfterPostTweet()
+    func resultAfterDeleteTweet()
 }
 protocol HomePresenterDeletegate:class {
     
@@ -21,15 +23,18 @@ protocol HomePresenter {
     var router: HomeRouter{get}
     func viewDidLoad(with session:TWTRSession)
     func refeshTimeline(count:UInt)
-    func searchTweet()
     func chooseTweetOptions()
+    func TweetPostButtonPressed()
+    func tweetSearchReturn(with keyword:String,count:Int)
+    func deleteTweet(tweetID:String)
 }
 class HomePresenterImpl: HomePresenter{
 
-   
+    var userImage = ""
+    var userID = ""
     var session:TWTRSession?
-
     var router: HomeRouter
+    var tweetHomeModelsCache:[TweetTableViewCellModel]?
     
     fileprivate weak var view: HomeView?
 
@@ -40,12 +45,29 @@ class HomePresenterImpl: HomePresenter{
     }
     fileprivate weak var delegate:HomePresenterDeletegate?
     
-    
-    func searchTweet() {
-        //search Tweet
+    func deleteTweet(tweetID:String){
+        firstly {
+            TweetDeleteAPI.deleteStatusTweet(tweetID: tweetID, from: session!)
+            }
+            .then{ deletedTweets in
+                self.handleDeleteTweet()
+        }
     }
     
+    func tweetSearchReturn(with keyword:String, count:Int) {
+        firstly {
+            TweetSearchAPI.fetchTweetSearch(keyword: keyword, from: session!, count: count)
+            }
+            .then{ tweets in
+                self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets), isSearching: true)
+        }
+    }
+
+    
     func chooseTweetOptions() {
+        
+    }
+    func handleDeleteTweet(){
         
     }
     func refeshTimeline(count:UInt) {
@@ -53,20 +75,36 @@ class HomePresenterImpl: HomePresenter{
             HomeTimelineAPI.fetchTimeline(with: session!,count: count)
             }
             .then{ tweets in
-                self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets))
+                self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets), isSearching: false)
         }
     }
     func viewDidLoad(with session: TWTRSession) {
         self.session = session
         firstly {
-            HomeTimelineAPI.fetchTimeline(with: session, count: 70)
+            UserInfoAPI.fetchUserInfo(from: session)
+            }
+            .then{ (userID, imageURL) -> Void in
+                print("user image url:\(imageURL)")
+                print("user id:\(imageURL)")
+                self.handleFetchUserInfo(userID: userID, imageURL: imageURL)
+            }
+            .then {_ in
+                HomeTimelineAPI.fetchTimeline(with: session, count: 70)
             }
             .then{ tweets in
-                self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets))
+                self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets), isSearching: false)
         }
     }
     
-    func handleFetchTweetsSuccess(tweetModels: [TweetTableViewCellModel]){
+    func handleFetchUserInfo(userID:String, imageURL:String){
+        self.userID = userID
+        self.userImage = imageURL
+        view?.updateUserAccountInfo(userID: userID, imageURL: imageURL)
+    }
+    func handleFetchTweetsSuccess(tweetModels: [TweetTableViewCellModel], isSearching:Bool){
+        if !isSearching{
+            tweetHomeModelsCache = tweetModels
+        }
        view?.updateTableView(array: tweetModels)
     }
     func handleFetchTweetsFailed(){
@@ -76,11 +114,20 @@ class HomePresenterImpl: HomePresenter{
     func convertToTweetModels(from tweets:[Tweet]) -> [TweetTableViewCellModel]{
         var tweetModels = [TweetTableViewCellModel]()
         for tweet in tweets{
+            print("converted to model with id:\(tweet.idStr!) name: \((tweet.user?.screenName)!)")
+            let tweetID = tweet.idStr!
             let ownerPhotoURLString = tweet.user?.profileImageUrlHttps
             let ownerName = tweet.user?.screenName
+            let ownerID = "\((tweet.user?.id)!)"
             let tweetTime = tweet.createdAt!
-            let tweetContent = tweet.text
+            var tweetContent = ""
+            if let content = tweet.fullText{
+                tweetContent = content
+            }else{
+                tweetContent = tweet.text!
+            }
             var tweetPhotoArrayURLString = [String]()
+            var tweetPhotoSizes = [Sizes]()
             
             if let exEntities = tweet.extendedEntities{
                 if let media = exEntities.media{
@@ -88,6 +135,7 @@ class HomePresenterImpl: HomePresenter{
                     // add url from media to tweetPhotoArrayString
                     for m in media{
                         tweetPhotoArrayURLString.append(m.mediaUrlHttps!)
+                        tweetPhotoSizes.append(m.sizes!)
                     }
                 }
                 
@@ -98,13 +146,17 @@ class HomePresenterImpl: HomePresenter{
                     // add url from media to tweetPhotoArrayString
                     for m in media{
                         tweetPhotoArrayURLString.append(m.mediaUrlHttps!)
+                        tweetPhotoSizes.append(m.sizes!)
                     }
                 }
             }
             
-            let tweetModel = TweetTableViewCellModel.init(LikeCount: tweet.favoriteCount, RetweetCount: tweet.retweetCount, ReplyCount: 0, TweetOwnerPhotoURLString: ownerPhotoURLString, TweetOwnerName: ownerName, TweetPosedTime: tweetTime, TweetPhotoURLStringArray: tweetPhotoArrayURLString, TweetContent: tweetContent)
+            let tweetModel = TweetTableViewCellModel.init(TweetID: tweetID, LikeCount: tweet.favoriteCount, RetweetCount: tweet.retweetCount, ReplyCount: 0, TweetOwnerPhotoURLString: ownerPhotoURLString, TweetOwnerName: ownerName, TweetOwnerID: ownerID, TweetPosedTime: tweetTime, TweetPhotoURLStringArray: tweetPhotoArrayURLString, TweetPhotoSizes: tweetPhotoSizes, TweetContent: tweetContent)
             tweetModels.append(tweetModel)
         }
         return tweetModels
+    }
+    func TweetPostButtonPressed() {
+        router.presentTweetPost(userImageURL: self.userImage, with: session!)
     }
 }

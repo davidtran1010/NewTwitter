@@ -21,6 +21,7 @@ public final class Tweet: Mappable, NSCoding {
     static let id = "id"
     static let retweeted = "retweeted"
     static let text = "text"
+    static let fullText = "full_text"
     static let entities = "entities"
     static let user = "user"
     static let possiblySensitiveAppealable = "possibly_sensitive_appealable"
@@ -45,6 +46,7 @@ public final class Tweet: Mappable, NSCoding {
   public var id: Int?
   public var retweeted: Bool? = false
   public var text: String?
+  public var fullText: String?
   public var entities: Entities?
   public var user: User?
   public var possiblySensitiveAppealable: Bool? = false
@@ -79,6 +81,7 @@ public final class Tweet: Mappable, NSCoding {
     id <- map[SerializationKeys.id]
     retweeted <- map[SerializationKeys.retweeted]
     text <- map[SerializationKeys.text]
+    fullText <- map[SerializationKeys.fullText]
     entities <- map[SerializationKeys.entities]
     user <- map[SerializationKeys.user]
     possiblySensitiveAppealable <- map[SerializationKeys.possiblySensitiveAppealable]
