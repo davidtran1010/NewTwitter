@@ -24,8 +24,11 @@ class LoginRouterImpl:LoginRouter{
     func presentHome(with session: TWTRSession) {
         let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
         
-        let vc = storyBoard.instantiateViewController(withIdentifier: "HomeVCIdentity") as! HomeViewController
-        vc.userSession = session
+        let vc = storyBoard.instantiateViewController(withIdentifier: "MainContainVCIdentity") as! MainContainerViewController
+        
+        vc.session = session
+       // let userInfo = ["session":session]
+          // NotificationCenter.default.post(name: .LoginSession, object: nil, userInfo: userInfo)
         loginViewController!.present(vc, animated:true, completion:nil)
         //loginViewController?.performSegue(withIdentifier: "LoginToHomeSegue", sender: nil)
     }

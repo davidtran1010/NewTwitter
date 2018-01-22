@@ -47,25 +47,51 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        initUIView()
+        //NotificationCenter.default.addObserver(self, selector: #selector(self.receiveSession(_:)), name: .LoginSession, object: nil)
         
-        configuarator = HomeConfiguratorImpl()
-        configuarator.configure(homeViewController: self)
         
-        presenter.viewDidLoad(with: userSession!)
+            initUIView()
+            configuarator = HomeConfiguratorImpl()
+            configuarator.configure(homeViewController: self)
+            presenter.viewDidLoad(with: userSession!)
+        
+        
     }
+//    @objc func receiveSession(_ notification:NSNotification){
+//            print("receiving session...")
+//            if let session = notification.userInfo?["session"] as? TWTRSession{
+//                self.userSession = session
+//                configuarator.configure(homeViewController: self)
+//                presenter.viewDidLoad(with: userSession!)
+//            }
+//            else{
+//                print("failed to receive session data from notification center")
+//            }
+//        
+//        
+//    }
     
     func sendRespondPostTweetToHomeVC(isSuccess: Bool) {
         if isSuccess{
             reloadTimeline()
         }
     }
-    @IBAction func postTweet(_ sender: Any) {
+    
+    @objc func pressProfileImage(){
+        NotificationCenter.default.post(name: Notification.Name("ToggleSideMenu"), object: nil)
+    }
+    @IBAction func postTweetButtonPressed(_ sender: Any) {
         presenter.TweetPostButtonPressed()
     }
     func initUIView(){
+        
+        
         userPhoto.layer.cornerRadius = 10
         userPhoto.clipsToBounds = true
+        let imageProfileTap = UITapGestureRecognizer(target: self, action: #selector(pressProfileImage))
+        userPhoto.addGestureRecognizer(imageProfileTap)
+        userPhoto.isUserInteractionEnabled = true
+        
         
         hideKeyboardWhenNotUsed()
         initSearchBar()
@@ -312,9 +338,9 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
         print("table cell:\(indexPath.section)")
         
         // DispatchQueue.main.async make this to make collectionview preload data work properly
-        DispatchQueue.main.async {
+       // DispatchQueue.main.async {
              cell.setCollectionViewDataSourceDelegate(self, forRow: indexPath.section)
-        }
+      //  }
         
         cell.contentView.layer.cornerRadius = 10
         cell.contentView.layer.borderColor = UIColor.clear.cgColor

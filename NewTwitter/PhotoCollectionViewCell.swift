@@ -11,6 +11,7 @@ import SDWebImage
 import Kingfisher
 class PhotoCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var Indicator: UIActivityIndicatorView!
     @IBOutlet weak var photoView: UIImageView!
     fileprivate func initView(){
         photoView.layer.cornerRadius = 10
@@ -42,14 +43,19 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 //        }
 //
         /////////////////////////////////////
-        photoView.sd_setImage(with: URL(string: photoURL)) { (image, error, cache, url) in
-            if image != nil{
-
-                print("tweet photo loaded with url:\(url)")
-            }
-            else{
-                print("error load image: \(error)")
+        DispatchQueue.main.async {
+            self.Indicator.isHidden = false
+            self.photoView.sd_setImage(with: URL(string: photoURL)) { (image, error, cache, url) in
+                if image != nil{
+                    self.Indicator.isHidden = true
+                    //self.photoView.sd_removeActivityIndicator()
+                    print("tweet photo loaded with url:\(url)")
+                }
+                else{
+                    print("error load image: \(error)")
+                }
             }
         }
+        
     }
 }

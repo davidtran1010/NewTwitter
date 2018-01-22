@@ -56,7 +56,7 @@ class LoginPresenterImpl:LoginPresenter{
     fileprivate func handleLoginSuccess(session:Any){
         view?.displayLoginInfo(info: (session as! TWTRSession).userName)
         view?.updateLoginState(isSuccess: true)
-        
+     
         router.presentHome(with: (session as! TWTRSession))
     
     }
