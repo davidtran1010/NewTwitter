@@ -20,9 +20,10 @@ class TweetPostViewController: UIViewController,TweetPostView {
     var configurator:TweetPostConfiguarator!
     var session:TWTRSession?
     var userImageURL:String?
+    var homeViewController:HomeViewController!
     
     @IBOutlet weak var UserPhoto: UIImageView!
-    @IBOutlet weak var TweetPostView: UIView!
+   
     @IBOutlet weak var TweetContent: UITextView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,10 +33,10 @@ class TweetPostViewController: UIViewController,TweetPostView {
         
         
         
-        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
-        TweetPostView.layer.cornerRadius = 10
-        UserPhoto.layer.cornerRadius = 10
-        UserPhoto.clipsToBounds = true
+        self.view.backgroundColor = UIColor.white.withAlphaComponent(0.97)
+//        TweetPostView.layer.cornerRadius = 10
+//        UserPhoto.layer.cornerRadius = 10
+//        UserPhoto.clipsToBounds = true
 //        UserPhoto.sd_setImage(with: URL(string: userImageURL!)) { (image, error, cache, url) in
 //            if image != nil{
 //                print("owner tweet photo loaded with url:\(url?.absoluteString)")
@@ -79,7 +80,21 @@ class TweetPostViewController: UIViewController,TweetPostView {
     }
     
     @IBAction func cancelPostTweet(_ sender: UIButton) {
-        self.view.removeFromSuperview()
+     
+        homeViewController.TweetPostContraint.constant = -245
+        UIView.animate(withDuration: 0.5, animations: {
+            self.homeViewController.view.layoutIfNeeded()
+        })
+        
+       // self.view.superview?.alpha = 0
+//        self.view.willMove(toSuperview: nil)
+//
+//        UIView.animate(withDuration: 0.5, delay: 0.1, options: .layoutSubviews, animations: {
+//            self.view.removeFromSuperview()
+//            self.removeFromParentViewController()
+//        }, completion: { (isFinished) in
+//
+//        })
     }
     /*
     // MARK: - Navigation

@@ -33,8 +33,10 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
     var configuarator: HomeConfigurator!
     var refesher: UIRefreshControl?
     
-   var userID = ""
+   //var userID = ""
+    var userInfo:UserInfoResponse!
     
+    @IBOutlet weak var TweetPostContraint: NSLayoutConstraint!
     @IBOutlet weak var tweetSearch: UITextField!
     @IBOutlet weak var userPhoto: UIImageView!
     @IBOutlet weak var loadingIcon: UIActivityIndicatorView!
@@ -50,10 +52,10 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
         //NotificationCenter.default.addObserver(self, selector: #selector(self.receiveSession(_:)), name: .LoginSession, object: nil)
         
         
-            initUIView()
-            configuarator = HomeConfiguratorImpl()
-            configuarator.configure(homeViewController: self)
-            presenter.viewDidLoad(with: userSession!)
+        initUIView()
+        configuarator = HomeConfiguratorImpl()
+        configuarator.configure(homeViewController: self)
+        presenter.viewDidLoad(with: userSession!)
         
         
     }
@@ -83,15 +85,22 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
     @IBAction func postTweetButtonPressed(_ sender: Any) {
         presenter.TweetPostButtonPressed()
     }
+    
     func initUIView(){
-        
         
         userPhoto.layer.cornerRadius = 10
         userPhoto.clipsToBounds = true
         let imageProfileTap = UITapGestureRecognizer(target: self, action: #selector(pressProfileImage))
         userPhoto.addGestureRecognizer(imageProfileTap)
         userPhoto.isUserInteractionEnabled = true
-        
+        userPhoto.sd_setImage(with: URL(string: userInfo.profileImageUrlHttps!)) { (image, error, cache, url) in
+            if image != nil{
+                print("image profile is loaded with url:\(url)")
+            }
+            else{
+                print("failed to load image profile")
+            }
+        }
         
         hideKeyboardWhenNotUsed()
         initSearchBar()
@@ -156,17 +165,17 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
         tweetTableView.reloadData()
         loadingIcon.isHidden = true
     }
-    func updateUserAccountInfo(userID: String, imageURL: String) {
-        self.userID = userID
-        userPhoto.sd_setImage(with: URL(string:imageURL)) { (image, error, cache, url) in
-            if image != nil{
-                print("user photo loaded")
-            }
-            else{
-                print("user photo failed to load")
-            }
-        }
-    }
+//    func updateUserAccountInfo(userID: String, imageURL: String) {
+//        self.userID = userID
+//        userPhoto.sd_setImage(with: URL(string:imageURL)) { (image, error, cache, url) in
+//            if image != nil{
+//                print("user photo loaded")
+//            }
+//            else{
+//                print("user photo failed to load")
+//            }
+//        }
+//    }
     
     func searchTweet(with keyword:String){
         presenter.tweetSearchReturn(with: keyword, count: countOfFirstTweets)
@@ -247,6 +256,12 @@ extension HomeViewController:UITextFieldDelegate{
         }
         return false
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        presenter.router.prepare(for: segue, sender: sender)
+    }
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return false
+    }
 }
 
 //MARK: - TWEET Tableview datasource and delegate
@@ -289,7 +304,7 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let hide = hideTableCellAction(indexPath: indexPath)
         let delete = deleteTableCellAction(indexPath: indexPath)
-        if(tweetModelArray![indexPath.section].TweetOwnerID == self.userID){
+        if(tweetModelArray![indexPath.section].TweetOwnerID == "\(self.userInfo.id!)"){
         return UISwipeActionsConfiguration(actions: [hide,delete])
         }
         return UISwipeActionsConfiguration(actions: [hide])
@@ -338,9 +353,9 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
         print("table cell:\(indexPath.section)")
         
         // DispatchQueue.main.async make this to make collectionview preload data work properly
-       // DispatchQueue.main.async {
+        DispatchQueue.main.async {
              cell.setCollectionViewDataSourceDelegate(self, forRow: indexPath.section)
-      //  }
+        }
         
         cell.contentView.layer.cornerRadius = 10
         cell.contentView.layer.borderColor = UIColor.clear.cgColor
@@ -399,36 +414,6 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
     }
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
-        
-//        let tweetPhotoArrayURLString = tweetModelArray![collectionView.tag].TweetPhotoURLStringArray!
-//        var frame = CGRect(x: 0, y: 7.67, width: 374, height: 186)
-//        if tweetPhotoArrayURLString.count > 1 {
-//
-//            let scrollVelocity = collectionView.panGestureRecognizer.velocity(in: collectionView)
-//            if scrollVelocity.x >= 0.0 {
-//                print("collectionview scroll left to right")
-//                guard let previousCell = collectionView.cellForItem(at: IndexPath(item: indexPath.item-1, section: indexPath.section)) else{
-//                    cell.frame = frame
-//                    return
-//                }
-//                let previousFrame = previousCell.frame
-//                frame = CGRect(x: previousFrame.maxX+5, y: previousFrame.minY, width: 372, height: 186)
-//            }
-//            else if scrollVelocity.x < 0.0 {
-//                print("collectionview scroll right to left")
-//                guard let nextCell = collectionView.cellForItem(at: IndexPath(item: indexPath.item+1, section: indexPath.section)) else{
-//                    cell.frame = frame
-//                    return
-//                }
-//                let nextFrame = nextCell.frame
-//                frame = CGRect(x: nextFrame.minX-5-372, y: nextFrame.minY, width: 372, height: 186)
-//            }
-//
-//        }
-//        else{
-//            frame = CGRect(x: 0, y: 7.67, width: 383, height: 186)
-//        }
-//         cell.frame = frame
     }
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -448,7 +433,6 @@ extension HomeViewController: UICollectionViewDataSource,UICollectionViewDelegat
         print("collectionview cell selected:\(indexPath.item)")
         
     
-        
     }
     
 }

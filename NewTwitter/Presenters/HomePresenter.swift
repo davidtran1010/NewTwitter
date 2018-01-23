@@ -12,7 +12,7 @@ import TwitterKit
 protocol HomeView: class{
     
     func updateTableView(array:[TweetTableViewCellModel])
-    func updateUserAccountInfo(userID:String,imageURL:String)
+    //func updateUserAccountInfo(userID:String,imageURL:String)
     func updateHomeAfterPostTweet()
     func resultAfterDeleteTweet()
 }
@@ -29,6 +29,7 @@ protocol HomePresenter {
     func deleteTweet(tweetID:String)
 }
 class HomePresenterImpl: HomePresenter{
+
 
     var userImage = ""
     var userID = ""
@@ -80,27 +81,34 @@ class HomePresenterImpl: HomePresenter{
     }
     func viewDidLoad(with session: TWTRSession) {
         self.session = session
-        firstly {
-            UserInfoAPI.fetchUserInfo(from: session)
-            }
-            .then{ (userID, imageURL) -> Void in
-                print("user image url:\(imageURL)")
-                print("user id:\(imageURL)")
-                self.handleFetchUserInfo(userID: userID, imageURL: imageURL)
-            }
-            .then {_ in
-                HomeTimelineAPI.fetchTimeline(with: session, count: 70)
-            }
-            .then{ tweets in
-                self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets), isSearching: false)
+        firstly{
+            HomeTimelineAPI.fetchTimeline(with: session, count: 70)
         }
+        .then{ tweets in
+            self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets), isSearching: false)
+        }
+        
+//        firstly {
+//            UserInfoAPI.fetchUserInfo(from: session)
+//            }
+//            .then{ userInfo -> Void in
+////                print("user image url:\(imageURL)")
+////                print("user id:\(imageURL)")
+//                self.handleFetchUserInfo(userInfo: userInfo)
+//            }
+//            .then {_ in
+//                HomeTimelineAPI.fetchTimeline(with: session, count: 70)
+//            }
+//            .then{ tweets in
+//                self.handleFetchTweetsSuccess(tweetModels: self.convertToTweetModels(from: tweets), isSearching: false)
+//        }
     }
-    
-    func handleFetchUserInfo(userID:String, imageURL:String){
-        self.userID = userID
-        self.userImage = imageURL
-        view?.updateUserAccountInfo(userID: userID, imageURL: imageURL)
-    }
+//    
+//    func handleFetchUserInfo(userInfo:UserInfoResponse){
+//        self.userID = "\(userInfo.id!)"
+//        self.userImage = userInfo.profileImageUrlHttps!
+//        //view?.updateUserAccountInfo(userID: userID, imageURL: userImage)
+//    }
     func handleFetchTweetsSuccess(tweetModels: [TweetTableViewCellModel], isSearching:Bool){
         if !isSearching{
             tweetHomeModelsCache = tweetModels

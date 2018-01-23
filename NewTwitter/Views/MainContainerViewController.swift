@@ -8,21 +8,63 @@
 
 import UIKit
 import TwitterKit
+import PromiseKit
+
 class MainContainerViewController: UIViewController {
 
+    @IBOutlet weak var HomeView: UIView!
     @IBOutlet weak var sideMenuContraint: NSLayoutConstraint!
     var session:TWTRSession!
+    var userInfo:UserInfoResponse!
     var sideMenuOpened = false
     
+    
+    
+ 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(toggleSideMenu), name: Notification.Name("ToggleSideMenu"), object: nil)
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(toggleSideMenu))
+        swipeRight.direction = .right
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(toggleSideMenu))
+        swipeLeft.direction = .left
+        view.addGestureRecognizer(swipeRight)
+        view.addGestureRecognizer(swipeLeft)
+        
+        fetchUserInfo()
+        
+        // Do any additional setup after loading the view.
+    }
+    func initUIView(){
+        
+    }
+    func fetchUserInfo(){
+        
+        firstly {
+            UserInfoAPI.fetchUserInfo(from: session)
+            }
+            .then{ userInfo -> Void in
+                self.handleFetchUserInfo(userInfo: userInfo)
+            }
+            
+    }
+    
+    func handleFetchUserInfo(userInfo:UserInfoResponse){
+        self.userInfo = userInfo
+        self.performSegue(withIdentifier: "HomeEmbedSegue", sender: self)
+        self.performSegue(withIdentifier: "SideMenuEmbedSegue", sender: self)
+    }
     @objc func toggleSideMenu(){
         if sideMenuOpened{
             sideMenuOpened = false
-            DispatchQueue.main.async {
-                self.sideMenuContraint.constant = -294
+       
+            self.sideMenuContraint.constant = -294
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
-            }
+             HomeView.isUserInteractionEnabled = true
         }else{
             sideMenuOpened = true
             
@@ -31,16 +73,10 @@ class MainContainerViewController: UIViewController {
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
+            HomeView.isUserInteractionEnabled = false
         }
         
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(toggleSideMenu), name: Notification.Name("ToggleSideMenu"), object: nil)
-        // Do any additional setup after loading the view.
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -54,10 +90,22 @@ class MainContainerViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "HomeEmbedSegue" {
             if let homeVC = segue.destination as? HomeViewController{
+                homeVC.userInfo = userInfo
                 homeVC.userSession = session
             }
         }
+        if segue.identifier == "SideMenuEmbedSegue" {
+            if let sideMenuVC = segue.destination as? SideMenuTableViewController{
+                sideMenuVC.userInfo = userInfo
+            
+            }
+        }
     }
-    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if identifier == "HomeEmbedSegue" || identifier == "SideMenuEmbedSegue"{
+            return false
+        }
+        return true
+    }
 
 }
