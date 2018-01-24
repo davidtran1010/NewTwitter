@@ -71,6 +71,7 @@ class HomeRouterImpl: HomeRouter{
         if segue.identifier == "TweetPostVCSegue"{
             if let tweetPostVC = segue.destination as? TweetPostViewController{
                 tweetPostVC.session = self.session
+                tweetPostVC.delegate = self.homeViewController
                 tweetPostVC.homeViewController = self.homeViewController
             }
         }

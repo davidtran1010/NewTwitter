@@ -24,11 +24,11 @@ class MainContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(toggleSideMenu), name: Notification.Name("ToggleSideMenu"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(toggleSideMenuSwipeToRight), name: Notification.Name("ToggleSideMenu"), object: nil)
         
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(toggleSideMenu))
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(toggleSideMenuSwipeToRight))
         swipeRight.direction = .right
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(toggleSideMenu))
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(toggleSideMenuSwipeToLeft))
         swipeLeft.direction = .left
         view.addGestureRecognizer(swipeRight)
         view.addGestureRecognizer(swipeLeft)
@@ -56,26 +56,27 @@ class MainContainerViewController: UIViewController {
         self.performSegue(withIdentifier: "HomeEmbedSegue", sender: self)
         self.performSegue(withIdentifier: "SideMenuEmbedSegue", sender: self)
     }
-    @objc func toggleSideMenu(){
-        if sideMenuOpened{
+    @objc func toggleSideMenuSwipeToLeft(){
+     
+        if sideMenuOpened == true{
             sideMenuOpened = false
-       
             self.sideMenuContraint.constant = -294
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
              HomeView.isUserInteractionEnabled = true
-        }else{
-            sideMenuOpened = true
-            
-            sideMenuContraint.constant = 0
-            //view.setNeedsUpdateConstraints()
-            UIView.animate(withDuration: 0.5, animations: {
-                self.view.layoutIfNeeded()
-            })
-            HomeView.isUserInteractionEnabled = false
         }
-        
+    }
+    @objc func toggleSideMenuSwipeToRight(){
+        if sideMenuOpened == false{
+        sideMenuOpened = true
+        sideMenuContraint.constant = 0
+        //view.setNeedsUpdateConstraints()
+        UIView.animate(withDuration: 0.5, animations: {
+            self.view.layoutIfNeeded()
+        })
+        HomeView.isUserInteractionEnabled = false
+        }
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

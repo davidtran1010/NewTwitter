@@ -153,7 +153,7 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
     }
    
  
-    func resultAfterDeleteTweet() {
+    func updateAfterDeleteTweet() {
         
     }
     
@@ -180,7 +180,20 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
     func searchTweet(with keyword:String){
         presenter.tweetSearchReturn(with: keyword, count: countOfFirstTweets)
     }
-    
+    func updateAfterLikeTweet(tweetIndex: Int) {
+        tweetModelArray![tweetIndex].LikeCount = tweetModelArray![tweetIndex].LikeCount! + 1
+         tweetModelArray![tweetIndex].isLiked = true
+        var indexSet = IndexSet()
+        indexSet.insert(tweetIndex)
+        tweetTableView.reloadSections(indexSet, with: .fade)
+    }
+    func updateAfterUnLikeTweet(tweetIndex: Int) {
+        tweetModelArray![tweetIndex].LikeCount = tweetModelArray![tweetIndex].LikeCount! - 1
+        tweetModelArray![tweetIndex].isLiked = false
+        var indexSet = IndexSet()
+        indexSet.insert(tweetIndex)
+        tweetTableView.reloadSections(indexSet, with: .fade)
+    }
     func updateHomeAfterPostTweet() {
         reloadTimeline()
         scrollToTop()
@@ -210,6 +223,20 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
             else{
                 
             }
+        }
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        presenter.router.prepare(for: segue, sender: sender)
+    }
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        return false
+    }
+    func likeTweetButtonPressed(tweetIndex:Int){
+        if tweetModelArray![tweetIndex].isLiked! == false{
+        presenter.likeTweet(tweetID: tweetModelArray![tweetIndex].TweetID!, tweetIndex: tweetIndex)
+        }
+        else{
+            presenter.unlikeTweet(tweetID: tweetModelArray![tweetIndex].TweetID!, tweetIndex: tweetIndex)
         }
     }
 }
@@ -256,12 +283,7 @@ extension HomeViewController:UITextFieldDelegate{
         }
         return false
     }
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        presenter.router.prepare(for: segue, sender: sender)
-    }
-    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        return false
-    }
+    
 }
 
 //MARK: - TWEET Tableview datasource and delegate
@@ -309,6 +331,7 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
         }
         return UISwipeActionsConfiguration(actions: [hide])
     }
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 5
     }
@@ -348,8 +371,7 @@ extension HomeViewController:UITableViewDelegate,UITableViewDataSource{
              cell.photoCollectionView.isHidden = true
         }
 
-        
-        cell.configureItem(model: model)
+        cell.configureItem(homeViewController: self, model: model)
         print("table cell:\(indexPath.section)")
         
         // DispatchQueue.main.async make this to make collectionview preload data work properly

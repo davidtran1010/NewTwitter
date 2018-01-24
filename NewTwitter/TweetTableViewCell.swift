@@ -10,20 +10,23 @@ import UIKit
 import Kingfisher
 import SDWebImage
 
+
 class TweetTableViewCell: UITableViewCell {
+
+    var homeViewController:HomeViewController!
     
+    var isLiked:Bool!
+    
+    @IBOutlet weak var replyButton: UIButton!
+    @IBOutlet weak var reTweetButton: UIButton!
+    @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var photoCollectionView: UICollectionView!
     @IBOutlet weak var LikeCount: UILabel!
     @IBOutlet weak var RetweetCount: UILabel!
     @IBOutlet weak var ReplyCount: UILabel!
     @IBOutlet weak var TweetOwnerPhoto: UIImageView!
-    
     @IBOutlet weak var TweetOwnerName: UILabel!
-    
     @IBOutlet weak var TweetPosedTime: UILabel!
-    
-    @IBOutlet weak var TweetPhoto: UIImageView!
-    
     @IBOutlet weak var TweetContent: UILabel!
     
     fileprivate func initView(){
@@ -31,8 +34,11 @@ class TweetTableViewCell: UITableViewCell {
         TweetOwnerPhoto.clipsToBounds = true
         
     }
-    func configureItem(model: TweetTableViewCellModel){
+    func configureItem(homeViewController:HomeViewController, model: TweetTableViewCellModel){
+        self.homeViewController = homeViewController
         initView()
+        isLiked = model.isLiked!
+        setLikeCountColor()
         LikeCount.text = "\(model.LikeCount!)"
         ReplyCount.text = ""
         RetweetCount.text = "\(model.RetweetCount!)"
@@ -59,6 +65,28 @@ class TweetTableViewCell: UITableViewCell {
         return formatedTime
      
     }
+    func setLikeCountColor(){
+        if isLiked{
+            LikeCount.textColor = UIColor(displayP3Red: 74/255.0, green: 160/255.0, blue: 237/255.0, alpha: 1)
+            LikeCount.font = UIFont.systemFont(ofSize: 13, weight: .black)
+        }else{
+            LikeCount.textColor = UIColor.black
+            LikeCount.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        }
+    }
+    @IBOutlet weak var replyTweet: UIButton!
+    @IBOutlet weak var reTweet: UIButton!
+    
+    @IBAction func likeTweet(_ sender: UIButton) {
+        print("like button at section \(sender.tag)")
+       homeViewController.likeTweetButtonPressed(tweetIndex: sender.tag)
+    }
+    
+}
+
+
+extension TweetTableViewCell{
+    
 }
 extension TweetTableViewCell{
     func setCollectionViewDataSourceDelegate
@@ -67,8 +95,8 @@ extension TweetTableViewCell{
         photoCollectionView.delegate = dataSourceDelegate
         photoCollectionView.dataSource = dataSourceDelegate
         photoCollectionView.tag = row
+        likeButton.tag = row
         photoCollectionView.reloadData()
-        
         
     }
 //    func setCollectionViewDataSourceDelegate

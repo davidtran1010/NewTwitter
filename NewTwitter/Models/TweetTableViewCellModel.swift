@@ -9,7 +9,9 @@
 import Foundation
 
 class TweetTableViewCellModel{
+    
     var TweetID:String?
+    var isLiked:Bool?
     var LikeCount: Int?
     var RetweetCount: Int?
     var ReplyCount: Int?
@@ -21,8 +23,9 @@ class TweetTableViewCellModel{
     var TweetPhotoSizes:[Sizes]?
     var TweetContent: String?
 
-    init(TweetID:String?,LikeCount: Int?, RetweetCount: Int?, ReplyCount: Int?, TweetOwnerPhotoURLString: String?, TweetOwnerName: String?,TweetOwnerID:String?, TweetPosedTime: String?,TweetPhotoURLStringArray:[String]?,TweetPhotoSizes:[Sizes], TweetContent: String?) {
+    init(TweetID:String?,isLiked: Bool?,LikeCount: Int?, RetweetCount: Int?, ReplyCount: Int?, TweetOwnerPhotoURLString: String?, TweetOwnerName: String?,TweetOwnerID:String?, TweetPosedTime: String?,TweetPhotoURLStringArray:[String]?,TweetPhotoSizes:[Sizes], TweetContent: String?) {
     self.TweetID = TweetID
+    self.isLiked = isLiked
     self.LikeCount = LikeCount
     self.RetweetCount = RetweetCount
     self.ReplyCount = ReplyCount

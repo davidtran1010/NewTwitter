@@ -14,7 +14,9 @@ protocol HomeView: class{
     func updateTableView(array:[TweetTableViewCellModel])
     //func updateUserAccountInfo(userID:String,imageURL:String)
     func updateHomeAfterPostTweet()
-    func resultAfterDeleteTweet()
+    func updateAfterDeleteTweet()
+    func updateAfterLikeTweet(tweetIndex:Int)
+    func updateAfterUnLikeTweet(tweetIndex:Int)
 }
 protocol HomePresenterDeletegate:class {
     
@@ -27,8 +29,11 @@ protocol HomePresenter {
     func TweetPostButtonPressed()
     func tweetSearchReturn(with keyword:String,count:Int)
     func deleteTweet(tweetID:String)
+    func likeTweet(tweetID:String,tweetIndex: Int)
+    func unlikeTweet(tweetID:String,tweetIndex: Int)
 }
 class HomePresenterImpl: HomePresenter{
+
 
 
     var userImage = ""
@@ -64,12 +69,39 @@ class HomePresenterImpl: HomePresenter{
         }
     }
 
+    func likeTweet(tweetID: String, tweetIndex:Int) {
+        firstly{
+             TweetLikeAPI.likeTweet(with: tweetID, from: session!)
+            }.then { (isSuccess) -> (Void) in
+                self.handleLikeTweet(tweetIndex:tweetIndex, isSuccess: isSuccess)
+        }
+       
+    }
     
+    func unlikeTweet(tweetID: String, tweetIndex: Int) {
+        firstly{
+            TweetLikeAPI.unlikeTweet(with: tweetID, from: session!)
+            }.then { (isSuccess) -> (Void) in
+                self.handleUnLikeTweet(tweetIndex:tweetIndex, isSuccess: isSuccess)
+        }
+    }
+    
+
     func chooseTweetOptions() {
         
     }
     func handleDeleteTweet(){
         
+    }
+    func handleLikeTweet(tweetIndex:Int,isSuccess:Bool){
+        if isSuccess{
+            view?.updateAfterLikeTweet(tweetIndex: tweetIndex)
+        }
+    }
+    func handleUnLikeTweet(tweetIndex:Int,isSuccess:Bool){
+        if isSuccess{
+            view?.updateAfterUnLikeTweet(tweetIndex: tweetIndex)
+        }
     }
     func refeshTimeline(count:UInt) {
         firstly {
@@ -159,7 +191,7 @@ class HomePresenterImpl: HomePresenter{
                 }
             }
             
-            let tweetModel = TweetTableViewCellModel.init(TweetID: tweetID, LikeCount: tweet.favoriteCount, RetweetCount: tweet.retweetCount, ReplyCount: 0, TweetOwnerPhotoURLString: ownerPhotoURLString, TweetOwnerName: ownerName, TweetOwnerID: ownerID, TweetPosedTime: tweetTime, TweetPhotoURLStringArray: tweetPhotoArrayURLString, TweetPhotoSizes: tweetPhotoSizes, TweetContent: tweetContent)
+            let tweetModel = TweetTableViewCellModel.init(TweetID: tweetID,isLiked: tweet.favorited, LikeCount: tweet.favoriteCount, RetweetCount: tweet.retweetCount, ReplyCount: 0, TweetOwnerPhotoURLString: ownerPhotoURLString, TweetOwnerName: ownerName, TweetOwnerID: ownerID, TweetPosedTime: tweetTime, TweetPhotoURLStringArray: tweetPhotoArrayURLString, TweetPhotoSizes: tweetPhotoSizes, TweetContent: tweetContent)
             tweetModels.append(tweetModel)
         }
         return tweetModels
