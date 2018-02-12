@@ -12,7 +12,7 @@ import TwitterKit
 
 protocol HomeRouter:ViewRouter {
     func presentNotification()
-    func presentTweetPost(userImageURL: String,with session:TWTRSession)
+    func presentTweetPost(userImageURL: String,with session:TWTRSession,targetStatusID:String, attachInfo:String)
 }
 
 class HomeRouterImpl: HomeRouter{
@@ -20,17 +20,21 @@ class HomeRouterImpl: HomeRouter{
     var TweetPostSegueLoaded = false
     fileprivate weak var homeViewController:HomeViewController?
     var session:TWTRSession?
-
+    var attachedInfoForPostTweet:String?
+    var targetStatusID:String?
+    
     init(homeViewController: HomeViewController) {
         self.homeViewController = homeViewController
     }
-    func presentTweetPost(userImageURL: String, with session:TWTRSession){
-            self.session = session
-        if !TweetPostSegueLoaded{
+    func presentTweetPost(userImageURL: String, with session:TWTRSession, targetStatusID:String, attachInfo:String){
+        self.session = session
+        self.targetStatusID = targetStatusID
+        self.attachedInfoForPostTweet = attachInfo
+        //if !TweetPostSegueLoaded{
             TweetPostSegueLoaded = true
             homeViewController?.performSegue(withIdentifier: "TweetPostVCSegue", sender: nil)
 
-        }
+        //}
         homeViewController?.TweetPostContraint.constant = 0
         UIView.animate(withDuration: 0.5, animations: {
             self.homeViewController?.view.layoutIfNeeded()
@@ -71,6 +75,8 @@ class HomeRouterImpl: HomeRouter{
         if segue.identifier == "TweetPostVCSegue"{
             if let tweetPostVC = segue.destination as? TweetPostViewController{
                 tweetPostVC.session = self.session
+                tweetPostVC.targetStatusID = self.targetStatusID!
+                tweetPostVC.attachInfo = self.attachedInfoForPostTweet!
                 tweetPostVC.delegate = self.homeViewController
                 tweetPostVC.homeViewController = self.homeViewController
             }

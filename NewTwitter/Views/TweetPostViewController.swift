@@ -21,17 +21,23 @@ class TweetPostViewController: UIViewController,TweetPostView {
     var session:TWTRSession?
     var userImageURL:String?
     var homeViewController:HomeViewController!
+    var attachInfo:String!
+    var targetStatusID:String = ""
     
-    @IBOutlet weak var UserPhoto: UIImageView!
-   
+    @IBOutlet weak var ContentViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var titlePostView: UILabel!
+    @IBOutlet weak var attachInfoView: UIView!
+    
+    @IBOutlet weak var attachInfoText: UILabel!
+    
     @IBOutlet weak var TweetContent: UITextView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        initUIView()
+        
+        
         configurator = TweetPostConfiguaratorImpl()
         configurator.configure(tweetPostViewController: self)
-        
-        
         
         self.view.backgroundColor = UIColor.white.withAlphaComponent(0.97)
 //        TweetPostView.layer.cornerRadius = 10
@@ -52,11 +58,37 @@ class TweetPostViewController: UIViewController,TweetPostView {
         
         
         
-        // Do any additional setup after loading the view.
+     
     }
-
+    override func viewWillLayoutSubviews() {
+        if targetStatusID != ""{
+            
+        }else{
+            
+        }
+    }
+    func initUIView(){
+        let splitedAttachInfo = attachInfo.split(separator: "=")
+        if targetStatusID != ""{
+            titlePostView.text = "post reply to " + splitedAttachInfo[0]
+            attachInfoText.text = "" + splitedAttachInfo[1]
+          attachInfoView.isHidden = false
+            ContentViewHeightConstraint.constant = 140
+          //attachInfoView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/4)
+//            attachInfoView.frame = CGRect(x: Int(attachInfoView.frame.minX), y: Int(attachInfoView.frame.minY), width: Int(attachInfoView.frame.maxY) - Int(attachInfoView.frame.minY), height: Int(view.frame.maxY - view.frame.minY))
+        }
+        else{
+            titlePostView.text = "What do you think ?"
+            // attachInfoView.heightAnchor.constraint(equalToConstant: 0)
+           attachInfoView.isHidden = true
+           ContentViewHeightConstraint.constant = view.frame.size.height * 0.9/3
+            
+//            attachInfoView.frame = CGRect(x: Int(attachInfoView.frame.minX), y: Int(attachInfoView.frame.minY), width: Int(attachInfoView.frame.maxY) - Int(attachInfoView.frame.minY), height: 0)
+        }
+        
+    }
     func updateUserInfo(photo: UIImage, name: String) {
-        UserPhoto.image = photo
+       // UserPhoto.image = photo
         
     }
     
@@ -73,7 +105,7 @@ class TweetPostViewController: UIViewController,TweetPostView {
     
     @IBAction func postTweet(_ sender: UIButton) {
         if(TweetContent.text.count > 0){
-            presenter.postTweet(with: TweetContent.text, from: session!)
+            presenter.postTweet(with: TweetContent.text, from: session!, to: targetStatusID)
         }
         
         print("Post Tweet")
@@ -81,11 +113,16 @@ class TweetPostViewController: UIViewController,TweetPostView {
     
     @IBAction func cancelPostTweet(_ sender: UIButton) {
      
-        homeViewController.TweetPostContraint.constant = -245
+        homeViewController.TweetPostContraint.constant = -350
         UIView.animate(withDuration: 0.5, animations: {
             self.homeViewController.view.layoutIfNeeded()
+            self.removeFromParentViewController()
+            self.view.removeFromSuperview()
         })
-        
+       
+    }
+    
+
        // self.view.superview?.alpha = 0
 //        self.view.willMove(toSuperview: nil)
 //
@@ -95,7 +132,7 @@ class TweetPostViewController: UIViewController,TweetPostView {
 //        }, completion: { (isFinished) in
 //
 //        })
-    }
+
     /*
     // MARK: - Navigation
 

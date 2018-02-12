@@ -21,7 +21,7 @@ protocol TweetPostPresenterDelegate: class {
 protocol TweetPostPresenter {
     
     func viewDidLoad(with session:TWTRSession)
-    func postTweet(with content:String,from session:TWTRSession)
+    func postTweet(with content:String,from session:TWTRSession, to statusID:String)
 }
 
 class TweetPostPresenterImpl:TweetPostPresenter {
@@ -42,9 +42,9 @@ init(view: TweetPostView?, router: TweetPostRouter) {
     func fetchUserInfo(){
         
     }
-    func postTweet(with content:String, from session:TWTRSession){
+    func postTweet(with content: String, from session: TWTRSession, to statusID: String) {
         firstly{
-            TweetPostAPI.postTweet(with: content, from: session)
+            StatusPostAPI.postStatusUpdate(with: content, from: session, to: statusID)
         }
             .then { (isSuccess) -> Void in
                 if(isSuccess){

@@ -16,6 +16,7 @@ class TweetLikeAPI{
     return Promise{ fullfil, reject in
     let twitter = STTwitterAPI(oAuthConsumerKey: ApiInfo.consumerKey, consumerSecret: ApiInfo.consumerSecret, oauthToken: session.authToken, oauthTokenSecret: session .authTokenSecret)
         twitter?.verifyCredentials(userSuccessBlock: { (userName, userID) in
+           
             twitter?.postFavoriteDestroy(withStatusID: tweetID, includeEntities: nil, useExtendedTweetMode: nil, successBlock: { (status) in
                 print(status)
                 fullfil(true)

@@ -81,6 +81,12 @@ class TweetTableViewCell: UITableViewCell {
         print("like button at section \(sender.tag)")
        homeViewController.likeTweetButtonPressed(tweetIndex: sender.tag)
     }
+    @IBAction func replyTweet(_ sender: UIButton) {
+        homeViewController.replyTweetButtonPressed(tweetIndex: replyButton.tag)
+    }
+    @IBAction func reTweet(_ sender: UIButton) {
+    }
+    
     
 }
 
@@ -96,6 +102,7 @@ extension TweetTableViewCell{
         photoCollectionView.dataSource = dataSourceDelegate
         photoCollectionView.tag = row
         likeButton.tag = row
+        replyButton.tag = row
         photoCollectionView.reloadData()
         
     }

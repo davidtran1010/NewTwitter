@@ -26,11 +26,12 @@ protocol HomePresenter {
     func viewDidLoad(with session:TWTRSession)
     func refeshTimeline(count:UInt)
     func chooseTweetOptions()
-    func TweetPostButtonPressed()
+    func TweetPostButtonPressed(toStatusID:String, attachInfo:String)
     func tweetSearchReturn(with keyword:String,count:Int)
     func deleteTweet(tweetID:String)
     func likeTweet(tweetID:String,tweetIndex: Int)
     func unlikeTweet(tweetID:String,tweetIndex: Int)
+     func replyTweet(tweetID:String,tweetIndex: Int)
 }
 class HomePresenterImpl: HomePresenter{
 
@@ -78,6 +79,7 @@ class HomePresenterImpl: HomePresenter{
        
     }
     
+    
     func unlikeTweet(tweetID: String, tweetIndex: Int) {
         firstly{
             TweetLikeAPI.unlikeTweet(with: tweetID, from: session!)
@@ -85,7 +87,9 @@ class HomePresenterImpl: HomePresenter{
                 self.handleUnLikeTweet(tweetIndex:tweetIndex, isSuccess: isSuccess)
         }
     }
-    
+    func replyTweet(tweetID: String, tweetIndex: Int) {
+       
+    }
 
     func chooseTweetOptions() {
         
@@ -196,7 +200,8 @@ class HomePresenterImpl: HomePresenter{
         }
         return tweetModels
     }
-    func TweetPostButtonPressed() {
-        router.presentTweetPost(userImageURL: self.userImage, with: session!)
+    func TweetPostButtonPressed(toStatusID: String,attachInfo: String) {
+        router.presentTweetPost(userImageURL: self.userImage, with: session!, targetStatusID: toStatusID, attachInfo: attachInfo)
     }
+
 }

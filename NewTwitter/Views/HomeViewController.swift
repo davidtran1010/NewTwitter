@@ -83,9 +83,14 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
         NotificationCenter.default.post(name: Notification.Name("ToggleSideMenu"), object: nil)
     }
     @IBAction func postTweetButtonPressed(_ sender: Any) {
-        presenter.TweetPostButtonPressed()
+        presenter.TweetPostButtonPressed(toStatusID: "", attachInfo: "")
     }
     
+    func replyTweetButtonPressed(tweetIndex:Int){
+        let attach = tweetModelArray![tweetIndex].TweetOwnerName! + "=" + tweetModelArray![tweetIndex].TweetContent!
+         presenter.TweetPostButtonPressed(toStatusID: tweetModelArray![tweetIndex].TweetID! , attachInfo: attach)
+        
+    }
     func initUIView(){
         
         userPhoto.layer.cornerRadius = 10
@@ -239,6 +244,7 @@ class HomeViewController: UIViewController, HomeView,TweetPostDelegate{
             presenter.unlikeTweet(tweetID: tweetModelArray![tweetIndex].TweetID!, tweetIndex: tweetIndex)
         }
     }
+
 }
 
 //MARK: - Hide keyboard when not used
